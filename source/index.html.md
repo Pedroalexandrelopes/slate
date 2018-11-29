@@ -2,9 +2,6 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
-  - python
   - javascript
 
 toc_footers:
@@ -19,80 +16,451 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+ilove.me Bot
 
-We have language bindings in Shell, Ruby, Python, and JavaScript! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
 
 # Authentication
 
 > To authorize, use this code:
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
-
 ```javascript
-const kittn = require('kittn');
+const botApi = require('botAPI');
 
-let api = kittn.authorize('meowmeowmeow');
+let api = botApi.authorize('token');
 ```
 
-> Make sure to replace `meowmeowmeow` with your API key.
+> Make sure to replace `token` with your Token.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
 
-`Authorization: meowmeowmeow`
+BotAPI uses token to allow access to the API.
+
+BotAPI expects for the Token to be included in all API requests to the server in a header that looks like the following:
+
+`Authorization: token`
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>token</code> with the token provided in the chat bot.
 </aside>
 
-# Kittens
 
-## Get All Kittens
 
-```ruby
-require 'kittn'
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
 
-```python
-import kittn
+# Webview
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
 
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
+## Get User Details
 
 ```javascript
-const kittn = require('kittn');
+const botApi = require('botAPI');
+let api = botApi.authorize('token');
+let user = api.user.get();
+```
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+> The above command returns JSON structured like this:
+
+```json
+{
+  "username": "Jorge",
+  "userphone": "9999999999",
+  "business": {
+    "id": 1,
+    "name": "Salão São Paulo 1",
+    "locale": "pt_BR",
+    "culture": "pt-br"
+  },
+  "suggestions": [
+    {
+      "id": 1,
+      "name": "Massagem relaxante"
+    },
+    {
+      "id": 2,
+      "name": "Limpeza de pele"
+    },
+  ],
+  "recent": [
+    {
+      "id": 145,
+      "name": "Manicure",
+      "price": 49.9,
+      "category": "Mão"
+    },
+  ]
+}
+```
+
+This endpoint retrieves detail from the chat token.
+
+### HTTP Request
+
+`GET http://example.com/api/user/details`
+
+
+
+
+
+
+
+
+
+
+## Search Services
+
+
+```javascript
+const botAPI = require('botAPI');
+
+let api = botAPI.authorize('token');
+let services = api.services.get('text');
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "results": [
+    {
+      "id": 1,
+      "name": "Massagem relaxante"
+    },
+    {
+      "id": 2,
+      "name": "Limpeza de pele"
+    },
+  ],
+  "categories": [
+    {
+      "id": 1,
+      "name": "Manicure"
+    },
+  ],
+  "services": [
+    {
+      "id": 145,
+      "name": "Manicure especial",
+      "price": 49.9,
+      "category": "Mão"
+    },
+    {
+      "id": 146,
+      "name": "Manicure simples",
+      "price": 32,
+      "category": "Mão"
+    },
+    {
+      "id": 147,
+      "name": "Massagem simples",
+      "price": 59,
+      "category": "Massagem"
+    },
+  ]
+}
+```
+
+This endpoint search for service suggestions and categories.
+
+
+### HTTP Request
+
+`GET http://example.com/api/services/term`
+
+`GET http://example.com/api/services/<ID>`
+
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+term | The text to search
+ID | The ID of the service category
+
+
+
+
+
+
+
+
+
+
+
+
+## Get Availabilities
+
+
+```javascript
+const botAPI = require('botAPI');
+
+let api = botAPI.authorize('token');
+let services = api.availabilities.get('2018-11-28');
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "date": "2018-11-28",
+  "availabilities": [
+    {
+      "id": 1,
+      "time": "9:30",
+      "price": 35.50,
+      "professionals": [
+        {
+          "id": 1,
+          "name": "António",
+        },
+        {
+          "id": 2,
+          "name": "Maria",
+        }
+      ],
+    },
+    {
+      "id": 2,
+      "time": "10:30",
+      "price": 35.50,
+      "professionals": [
+        {
+          "id": 1,
+          "name": "António",
+        },
+      ],
+    },
+  ],
+}
+```
+
+This endpoint retrieves the availabilities.
+
+
+### HTTP Request
+
+`GET http://example.com/api/service/<ID>/availabilities/<date>`
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+date | The date selected (yyyy-MM-dd)
+ID | service id
+
+
+
+
+
+
+
+
+## Availability Lock
+
+
+```javascript
+const botAPI = require('botAPI');
+
+let api = botAPI.authorize('token');
+let services = api.lock.post(1, 2);
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "success": true,
+  "slot": {
+    "id": 12,
+  }
+}
+```
+
+This endpoint locks the selected availability slot.
+
+
+### HTTP Request
+
+`POST http://example.com/api/service/<ID>/availabilities/<aID>/lock`
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+ID | Id of the selected service
+aID | Id of the availability
+
+
+
+
+
+
+
+## Availability Release
+
+
+```javascript
+const botAPI = require('botAPI');
+
+let api = botAPI.authorize('token');
+let services = api.release.post(12);
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "success": true,
+}
+```
+
+This endpoint releases the locked availability slot.
+
+
+### HTTP Request
+
+`POST http://example.com/api/service/<ID>/availabilities/<aID>/release`
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+ID | Id of the selected service
+aID | Id of the availability
+
+
+
+
+
+
+
+
+## Availability Confirm
+
+
+```javascript
+const botAPI = require('botAPI');
+
+let api = botAPI.authorize('token');
+let services = api.confirmBooking.post(12);
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "success": true,
+}
+```
+
+This endpoint retrieves the availabilities.
+
+
+### HTTP Request
+
+`POST http://example.com/api/service/<ID>/availabilities/<aID>/confirm`
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+ID | Id of the selected service
+aID | Id of the availability
+
+
+
+
+
+
+
+
+
+
+## Set User Phone (SMS Code)
+
+
+```javascript
+const botAPI = require('botAPI');
+
+let api = botAPI.authorize('token');
+let services = api.smscode.post('999999999');
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "success": true,
+}
+```
+
+This endpoint sends the user phone and send an SMS with a code.
+
+
+### HTTP Request
+
+`POST http://example.com/api/user/phone/<phone>`
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+phone | The user input phone
+
+
+
+
+
+
+
+## Confirm User Phone
+
+
+```javascript
+const botAPI = require('botAPI');
+
+let api = botAPI.authorize('token');
+let services = api.confirmPhone.post('123456');
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "success": true,
+}
+```
+
+This endpoint confirms the user phone.
+
+
+### HTTP Request
+
+`POST http://example.com/api/user/phone/confirm/<code>`
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+code | The sent code
+
+
+
+
+
+
+
+
+
+
+
+## Get User Bookings
+
+
+```javascript
+const botAPI = require('botAPI');
+
+let api = botAPI.authorize('token');
+let services = api.bookings.get();
 ```
 
 > The above command returns JSON structured like this:
@@ -101,139 +469,153 @@ let kittens = api.kittens.get();
 [
   {
     "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
+    "date": "2018-11-28",
+    "time": "9:30",
+    "state": "booked",
+    "service": {
+      "id": 145,
+      "name": "Manicure",
+      "price": 49.9
+    },
+    "professional": {
+      "id": 145,
+      "name": "António"
+    }
   },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
 ]
 ```
 
-This endpoint retrieves all kittens.
+This endpoint retrieves the user past bookings
+
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`GET http://example.com/api/user/bookings`
 
-### Query Parameters
 
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
 
-## Get a Specific Kitten
 
-```ruby
-require 'kittn'
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
 
-```python
-import kittn
+# Chat
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
 
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
+
+
+## Get Profile
+
 
 ```javascript
-const kittn = require('kittn');
+const botAPI = require('botAPI');
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
+let profile = api.profile.get(1, 2);
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  "businessToken": "token",
+  "userName": "Joaquim",
+  "userPhone": "999999999",
 }
 ```
 
-This endpoint retrieves a specific kitten.
+This endpoint retrieves the user profile details
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+`GET http://example.com/profile/<bID><cID>`
 
 ### URL Parameters
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the kitten to retrieve
+bID | The ID of the business facebook page
+cID | The ID of the user chat-business
 
-## Delete a Specific Kitten
 
-```ruby
-require 'kittn'
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
 
-```python
-import kittn
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
 
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
-```
+
+
+## Save Profile
+
 
 ```javascript
-const kittn = require('kittn');
+const botAPI = require('botAPI');
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
+let profile = api.profile.save(1, 2, 'Joaquim' '{"id": 1}');
 ```
 
 > The above command returns JSON structured like this:
 
 ```json
 {
-  "id": 2,
-  "deleted" : ":("
+  "success": true
 }
 ```
 
-This endpoint deletes a specific kitten.
+This endpoint saves the user profile details
+
 
 ### HTTP Request
 
-`DELETE http://example.com/kittens/<ID>`
+`POST http://example.com/profile/<bID><cID><username><businesses>`
 
 ### URL Parameters
 
 Parameter | Description
 --------- | -----------
-ID | The ID of the kitten to delete
+bID | The ID of the business facebook page
+cID | The ID of the user chat-business
+username | Name of the user
+businesses | Ids of the other pages the user is registered with
 
+
+
+
+
+
+
+
+
+
+
+## Save Message Event
+
+
+```javascript
+const botAPI = require('botAPI');
+
+let profile = api.message.save(1, 2, 'message', 'seqID', 123456);
+```
+
+> The above command returns JSON structured like this:
+
+```json
+{
+  "success": true
+}
+```
+
+This endpoint saves the user message event
+
+
+### HTTP Request
+
+`POST http://example.com/message/<bID><cID><message><seqID><timestamp>`
+
+### URL Parameters
+
+Parameter | Description
+--------- | -----------
+bID | The ID of the business facebook page
+cID | The ID of the user chat-business
+message | Message sent by the user
+seqID | Facebook message sequence ID
+timestamp | Facebook message timestamp
